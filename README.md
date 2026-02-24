@@ -6,6 +6,7 @@
 [![AlphaVantage](https://img.shields.io/badge/API-Alpha%20Vantage-orange)](https://www.alphavantage.co/)
 [![NewsAPI](https://img.shields.io/badge/API-NewsAPI-red)](https://newsapi.org/)
 [![Twilio](https://img.shields.io/badge/SMS-Twilio-purple)](https://www.twilio.com/)
+[![Version](https://img.shields.io/badge/version-v1.0.0-informational)](https://github.com/natalnetwork/stock_news)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight stock monitoring tool that:
@@ -19,6 +20,12 @@ A lightweight stock monitoring tool that:
     -   SMS (Twilio)
     -   Email (SMTP)
     -   Or multiple outputs simultaneously
+
+------------------------------------------------------------------------
+
+## 🏷 Version
+
+-   Current project version: **v1.0.0**
 
 ------------------------------------------------------------------------
 
@@ -37,6 +44,9 @@ A lightweight stock monitoring tool that:
 
     stock-news-alert/
     ├── stock_news.py        # CLI entrypoint
+    ├── cli_parser.py        # CLI argument parsing + normalization
+    ├── alert_service.py     # Core workflow orchestration per symbol
+    ├── app_types.py         # Shared lightweight type models
     ├── constants.py         # Configurable constants
     ├── stock.py             # Alpha Vantage logic
     ├── news.py              # NewsAPI client
@@ -46,6 +56,18 @@ A lightweight stock monitoring tool that:
     ├── .env.example
     ├── .gitignore
     └── .env                 # NOT COMMITTED
+
+------------------------------------------------------------------------
+
+## 🧱 Architecture
+
+-   `stock_news.py`: thin entrypoint (CLI mode routing + startup checks)
+-   `cli_parser.py`: parses CLI args and normalizes symbols/output targets
+-   `alert_service.py`: runs the stock→news→report→notify flow
+-   `stock.py` + `news.py`: external API clients
+-   `report_formatter.py`: terminal/email report and SMS message formatting
+-   `notifiers.py`: Twilio + SMTP adapters with environment-based config
+-   `app_types.py`: shared types for parser/service boundaries
 
 ------------------------------------------------------------------------
 
