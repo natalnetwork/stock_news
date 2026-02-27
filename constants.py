@@ -16,7 +16,6 @@ NEWS_ENDPOINT = "https://newsapi.org/v2/everything"
 
 # Stock settings
 SYMBOL = "TSLA"
-COMPANY_NAME = "Tesla Inc"
 
 # Alert threshold: absolute percent move between two newest trading days
 PRICE_CHANGE_THRESHOLD_PCT = Decimal("5")

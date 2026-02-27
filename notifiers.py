@@ -67,7 +67,9 @@ class SmsNotifier:
             raise RuntimeError(
                 "Missing TWILIO credentials in .env (TWILIO_ACCOUNT_SID|TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_FROM_NUMBER|TWILIO_PHONE)."
             )
-        return cls(account_sid=account_sid, auth_token=auth_token, from_number=from_number)
+        return cls(
+            account_sid=account_sid, auth_token=auth_token, from_number=from_number
+        )
 
     def send_messages(self, messages: list[str], to_numbers: list[str]) -> None:
         """Send each message to each recipient number."""
@@ -79,13 +81,17 @@ class SmsNotifier:
         client = Client(self.account_sid, self.auth_token)
         for to_number in to_numbers:
             for message in messages:
-                client.messages.create(from_=self.from_number, body=message, to=to_number)
+                client.messages.create(
+                    from_=self.from_number, body=message, to=to_number
+                )
 
 
 class EmailNotifier:
     """SMTP SSL email sender using environment-based configuration."""
 
-    def __init__(self, host: str, port: int, user: str, password: str, from_address: str):
+    def __init__(
+        self, host: str, port: int, user: str, password: str, from_address: str
+    ):
         """Initialize notifier with explicit SMTP settings."""
         self.host = host
         self.port = port
@@ -103,9 +109,17 @@ class EmailNotifier:
         from_address = EnvReader.get("SMTP_FROM") or user
 
         if not host or not user or not password or not from_address:
-            raise RuntimeError("Missing SMTP_HOST/SMTP_USER/SMTP_PASSWORD/SMTP_FROM in environment (.env).")
+            raise RuntimeError(
+                "Missing SMTP_HOST/SMTP_USER/SMTP_PASSWORD/SMTP_FROM in environment (.env)."
+            )
 
-        return cls(host=host, port=port, user=user, password=password, from_address=from_address)
+        return cls(
+            host=host,
+            port=port,
+            user=user,
+            password=password,
+            from_address=from_address,
+        )
 
     def send(self, subject: str, body: str, to_addresses: list[str]) -> None:
         """Send a plain-text email to one or multiple recipients."""
@@ -120,7 +134,9 @@ class EmailNotifier:
 
         context = ssl.create_default_context()
         try:
-            with smtplib.SMTP_SSL(self.host, self.port, timeout=20, context=context) as server:
+            with smtplib.SMTP_SSL(
+                self.host, self.port, timeout=20, context=context
+            ) as server:
                 server.login(self.user, self.password)
                 server.send_message(msg)
         except Exception as exc:

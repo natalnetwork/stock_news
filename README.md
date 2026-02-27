@@ -29,6 +29,15 @@ A lightweight stock monitoring tool that:
 
 ------------------------------------------------------------------------
 
+## ⚠ Breaking Change
+
+-   `--symbols` accepts ticker symbols only (e.g. `TSLA IBM`).
+-   Alias syntax like `TSLA="Tesla"` is no longer supported.
+-   `COMPANY_NAME` was removed from `constants.py`.
+-   Reports and SMS now display only the stock symbol.
+
+------------------------------------------------------------------------
+
 ## 🚀 Features
 
 -   Free-tier compatible (`TIME_SERIES_DAILY`)
@@ -153,16 +162,16 @@ python stock_news.py --send-test-sms +5584991974595 --test-message "Hallo vom St
 python stock_news.py   --output terminal   --output sms:+5584991974595   --output email:test@gmail.com
 ```
 
-### Multiple Symbols (optional alias)
+### Multiple Symbols
 
 ``` bash
-python stock_news.py --symbols TSLA="Tesla" IBM --output terminal
+python stock_news.py --symbols TSLA IBM --output terminal
 ```
 
 ### Force News Fetch (ignore threshold)
 
 ``` bash
-python stock_news.py --symbols TSLA="Tesla" IBM --output terminal --ignore-threshold
+python stock_news.py --symbols TSLA IBM --output terminal --ignore-threshold
 ```
 
 ------------------------------------------------------------------------

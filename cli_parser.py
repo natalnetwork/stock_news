@@ -9,21 +9,17 @@ from __future__ import annotations
 import argparse
 
 from app_types import OutputTargets, SymbolTargets
-from constants import SYMBOL, COMPANY_NAME
+from constants import SYMBOL
 
 
 def parse_symbols(entries: list[str] | None) -> SymbolTargets:
     """
-    Parse symbol arguments into `(symbol, display_name)` tuples.
+    Parse symbol arguments into normalized uppercase ticker symbols.
 
-    Accepted forms:
-    - `IBM`
-    - `TSLA="Tesla"`
-
-    If `entries` is omitted, the default symbol/company from constants is used.
+    If `entries` is omitted, the default symbol from constants is used.
     """
     if not entries:
-        return [(SYMBOL, COMPANY_NAME)]
+        return [SYMBOL]
 
     parsed: SymbolTargets = []
     for raw in entries:
@@ -31,16 +27,8 @@ def parse_symbols(entries: list[str] | None) -> SymbolTargets:
         if not entry:
             continue
 
-        if "=" in entry:
-            symbol, alias = entry.split("=", 1)
-            symbol = symbol.strip().upper()
-            alias = alias.strip().strip('"').strip("'")
-            if not symbol:
-                raise ValueError(f"Invalid symbol entry: {raw}")
-            parsed.append((symbol, alias or symbol))
-        else:
-            symbol = entry.upper()
-            parsed.append((symbol, symbol))
+        symbol = entry.upper()
+        parsed.append(symbol)
 
     if not parsed:
         raise ValueError("--symbols was provided but no valid symbols were found.")
@@ -60,7 +48,7 @@ def parse_cli() -> argparse.Namespace:
     parser.add_argument(
         "--symbols",
         nargs="+",
-        help='Symbols to check, optional alias via SYMBOL="Alias". Example: --symbols TSLA="Tesla" IBM',
+        help="Symbols to check. Example: --symbols TSLA IBM",
     )
     parser.add_argument(
         "--ignore-threshold",

@@ -60,7 +60,9 @@ class NewsClient:
             raise ValueError("No NEWS_TERMS provided.")
         return " OR ".join(parts)
 
-    def top(self, terms: list[str], *, language: str = "en", limit: int = 3) -> list[dict]:
+    def top(
+        self, terms: list[str], *, language: str = "en", limit: int = 3
+    ) -> list[dict]:
         """
         Return up to `limit` articles matching `terms`.
 

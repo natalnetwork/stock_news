@@ -22,6 +22,7 @@ class StockSignal:
     """
     Result of a stock move analysis for the two newest available daily closes.
     """
+
     symbol: str
     day_new: str
     day_old: str
@@ -42,7 +43,9 @@ class StockClient:
       keys like "Note" or "Error Message".
     """
 
-    def __init__(self, endpoint: str, api_key: str, symbol: str, threshold_pct: Decimal):
+    def __init__(
+        self, endpoint: str, api_key: str, symbol: str, threshold_pct: Decimal
+    ):
         """
         Initialize the stock client.
 
@@ -120,7 +123,9 @@ class StockClient:
         c_new = Decimal(ts[d_new]["4. close"])
         c_old = Decimal(ts[d_old]["4. close"])
         if c_old == 0:
-            raise ZeroDivisionError("Previous close is 0; cannot compute percentage change.")
+            raise ZeroDivisionError(
+                "Previous close is 0; cannot compute percentage change."
+            )
 
         change_pct = (c_new - c_old) / c_old * Decimal("100")
         triggered = abs(change_pct) >= self.threshold_pct

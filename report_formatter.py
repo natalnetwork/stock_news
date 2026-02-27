@@ -36,14 +36,14 @@ class ReportFormatter:
         except Exception:
             return dt_str
 
-    def render_report(self, signal, company_name: str, articles: list[dict], threshold_pct) -> str:
+    def render_report(self, signal, articles: list[dict], threshold_pct) -> str:
         """Render a full multi-line report for terminal/email output."""
         pct = float(signal.change_pct)
         line = "=" * 70
         lines = [
             "",
             line,
-            f"STOCK NEWS ALERT  |  {signal.symbol} ({company_name})",
+            f"STOCK NEWS ALERT  |  {signal.symbol}",
             "-" * 70,
             f"Period : {signal.day_old} → {signal.day_new}",
             f"Move   : {self.arrow(pct)} {signal.change_pct:.2f}%   (threshold: {threshold_pct:.2f}%)",
@@ -71,9 +71,12 @@ class ReportFormatter:
         lines.append(line)
         return "\n".join(lines)
 
-    def build_sms_messages(self, signal, company_name: str, articles: list[dict]) -> list[str]:
+    def build_sms_messages(self, signal, articles: list[dict]) -> list[str]:
         """Create one concise SMS body per article (or one fallback message)."""
-        header = f"{signal.symbol} ({company_name}): {self.arrow(float(signal.change_pct))} {signal.change_pct:.2f}%"
+        header = (
+            f"{signal.symbol}: {self.arrow(float(signal.change_pct))} "
+            f"{signal.change_pct:.2f}%"
+        )
 
         if not articles:
             return [f"{header}\nNo related news found."]

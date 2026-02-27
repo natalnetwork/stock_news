@@ -8,9 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-
-SymbolTarget = tuple[str, str]
-SymbolTargets = list[SymbolTarget]
+SymbolTargets = list[str]
 
 
 @dataclass

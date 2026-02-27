@@ -66,10 +66,10 @@ class AlertService:
 
     def run(self, symbol_targets: SymbolTargets) -> None:
         """Process all symbols and dispatch alerts to terminal/SMS/email outputs."""
-        for symbol, company_name in symbol_targets:
-            self._process_symbol(symbol, company_name)
+        for symbol in symbol_targets:
+            self._process_symbol(symbol)
 
-    def _process_symbol(self, symbol: str, company_name: str) -> None:
+    def _process_symbol(self, symbol: str) -> None:
         """Run stock + news flow for one symbol and send configured outputs."""
         try:
             stock = StockClient(
@@ -86,23 +86,31 @@ class AlertService:
 
         if not signal.triggered and not self.ignore_threshold:
             if self.terminal_enabled:
-                print(f"{signal.symbol} {signal.day_old}->{signal.day_new}: {signal.change_pct:.2f}% (no alert)")
+                print(
+                    f"{signal.symbol} {signal.day_old}->{signal.day_new}: {signal.change_pct:.2f}% (no alert)"
+                )
             return
 
         try:
             news = NewsClient(endpoint=NEWS_ENDPOINT, api_key=self.news_key)
-            articles = news.top(NEWS_TERMS + [symbol, company_name], language=NEWS_LANGUAGE, limit=NEWS_LIMIT)
+            articles = news.top(
+                NEWS_TERMS + [symbol],
+                language=NEWS_LANGUAGE,
+                limit=NEWS_LIMIT,
+            )
         except Exception as exc:
             if self.terminal_enabled:
                 print(f"{symbol}: could not fetch news ({exc})")
             articles = []
 
-        report = self.formatter.render_report(signal, company_name, articles, PRICE_CHANGE_THRESHOLD_PCT)
+        report = self.formatter.render_report(
+            signal, articles, PRICE_CHANGE_THRESHOLD_PCT
+        )
         if self.terminal_enabled:
             print(report)
 
         if self.sms_notifier and self.sms_targets:
-            sms_messages = self.formatter.build_sms_messages(signal, company_name, articles)
+            sms_messages = self.formatter.build_sms_messages(signal, articles)
             try:
                 self.sms_notifier.send_messages(sms_messages, self.sms_targets)
             except Exception as exc:
